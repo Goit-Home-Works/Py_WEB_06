@@ -1,8 +1,39 @@
-package = []
+[[package]]
+name = "faker"
+version = "23.1.0"
+description = "Faker is a Python package that generates fake data for you."
+category = "main"
+optional = false
+python-versions = ">=3.8"
+
+[package.dependencies]
+python-dateutil = ">=2.4"
+
+[[package]]
+name = "python-dateutil"
+version = "2.8.2"
+description = "Extensions to the standard Python datetime module"
+category = "main"
+optional = false
+python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,>=2.7"
+
+[package.dependencies]
+six = ">=1.5"
+
+[[package]]
+name = "six"
+version = "1.16.0"
+description = "Python 2 and 3 compatibility utilities"
+category = "main"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*"
 
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.12"
-content-hash = "6ca27f1f3ad1f08dcc35013acd673058856ebd4b4a3ec35913f2b2801a8c0a29"
+content-hash = "94bb4347d68724e770485baa6e9f7443ae936b8be0c73814d9a1a293398b2f72"
 
 [metadata.files]
+faker = []
+python-dateutil = []
+six = []
