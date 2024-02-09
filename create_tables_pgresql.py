@@ -7,11 +7,10 @@ fake = Faker()
 
 # Connect to PostgreSQL
 conn = psycopg2.connect(
-    dbname='your_database_name',
-    user='your_username',
-    password='your_password',
-    host='your_host',
-    port='your_port'
+    user='postgres',
+    password='12345',
+    host='localhost',
+    port='5432'
 )
 
 # Create a cursor object to interact with the database

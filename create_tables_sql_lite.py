@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 fake = Faker()
 
 # Connect to SQLite
-conn = sqlite3.connect('your_database_name.db')
+conn = sqlite3.connect('hw_06_sqlite.db')
 
 # Create a cursor object to interact with the database
 cur = conn.cursor()
