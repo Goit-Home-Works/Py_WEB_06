@@ -1,5 +1,5 @@
 from typing import List, Optional
-from table import Table
+from .table import Table
 from dataclasses import dataclass
 
 @dataclass
@@ -15,15 +15,15 @@ class StudentsTable(Table):
             {
                 "id": "serial PRIMARY KEY NOT NULL",
                 "name": "varchar(255) NOT NULL",
-                "group_id": "integer REFERENCES groups(id)"
+                "group_id": int
             },
-            []
+            ["FOREIGN KEY  (group_id) REFERENCES groups(id)"],
         )
 
-    def create_student(self, student: Student) -> Optional[int]:
-        return super().create(student.__dict__)
+    def create_table(self) -> Optional[int]:
+        return super().create_table()
 
-    def get_all_students(self) -> List[Student] | None:
+    def get_all(self) -> List[Student] | None:
         rows = super().get_all()
         return [Student(**i) for i in rows] if rows else None
 

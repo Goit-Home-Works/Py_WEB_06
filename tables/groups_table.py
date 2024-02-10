@@ -1,6 +1,5 @@
- 
 from typing import List, Optional
-from table import Table
+from .table import Table
 from dataclasses import dataclass
 
 @dataclass
@@ -19,10 +18,10 @@ class GroupsTable(Table):
             []
         )
 
-    def create_group(self, group: Group) -> Optional[int]:
-        return super().create(group.__dict__)
+    def create_table(self) -> Optional[int]:
+        return super().create_table()
 
-    def get_all_groups(self) -> List[Group] | None:
+    def get_all(self) -> List[Group] | None:
         rows = super().get_all()
         return [Group(**i) for i in rows] if rows else None
 

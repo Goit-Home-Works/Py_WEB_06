@@ -14,7 +14,14 @@ class Table:
         columns: dict[column_name, column_type],
         constrains: list[str]
     ) -> None:
-        
+        self.conn = connect(
+            dbname="postgres",
+            user="postgres",
+            password="sergio",
+            host="localhost",
+            port=5432,
+        )
+
         self.table_name = table_name
         self.columns = columns
         self.constrains = constrains
@@ -24,7 +31,7 @@ class Table:
 
         temp = (", ").join(full_columns)
 
-        sql_request = f"CREATE TABLE IF NOT EXISTS {table_name} ({temp});"
+        sql_request = f"CREATE TABLE IF NOT EXISTS {table_name} ({', '.join(full_columns)});"
 
         logging.debug(sql_request)
 
@@ -37,27 +44,29 @@ class Table:
         finally:
             c.close()
 
+    def create_table(self) -> int | None:
+        
+        print(self)
+        
+        # table_columns = (",").join(self.columns.keys())
+        # table_questions = (",").join("?" for _ in self.columns.keys())
 
+        # sql_request = f'INSERT INTO {self.table_name}({table_columns}) VALUES({table_questions});'
 
-    def create(self, obj_dict: dict) -> int | None:
-        table_columns = (",").join(self.columns.keys())
-        table_questions = (",").join("?" for _ in self.columns.keys())
+        # logging.debug(sql_request)
+        
 
-        sql_request = f'INSERT INTO {self.table_name}({table_columns}) VALUES({table_questions});'
+        # cur = self.conn.cursor()
 
-        logging.debug(sql_request)
+        # try:
+        #     cur.execute(sql_request)
+        #     self.conn.commit()
+        # except Error as e:
+        #     print(e)
+        # finally:
+        #     cur.close()
 
-        cur = self.conn.cursor()
-
-        try:
-            cur.execute(sql_request, list(obj_dict.values()))
-            self.conn.commit()
-        except Error as e:
-            print(e)
-        finally:
-            cur.close()
-
-        return cur.lastrowid
+        # return cur.lastrowid
 
     def get_all(self) -> list[typing.Iterable[typing.Any]] | None:
         rows = None
@@ -70,7 +79,7 @@ class Table:
             print(e)
         finally:
             cur.close()
-            
+
         return rows
 
     def update(
@@ -119,3 +128,7 @@ class Table:
             print(e)
         finally:
             cur.close()
+    def __str__(self):
+        return f"{self.__dict__}"
+    
+    

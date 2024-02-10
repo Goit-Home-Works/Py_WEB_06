@@ -1,16 +1,40 @@
-# This is a sample Python script.
+import asyncio
+import time
+import webbrowser
+from web_app import MyApp
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+async def run_flask_app():
+    my_app = MyApp()
+    my_app.app.run(debug=True, port=5005, use_reloader=False)
 
+def open_browser():
+    url = "http://localhost:5005"
+    webbrowser.open(url)
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+def run():
+    # Create an event loop
+    loop = asyncio.get_event_loop()
 
+    try:
+        # Run Flask app in an asynchronous event loop
+        flask_task = loop.create_task(run_flask_app())
 
-# Press the green button in the gutter to run the script.
+        # Wait for a moment to ensure the Flask app is up and running
+        time.sleep(1)
+
+        # Open the browser
+        open_browser()
+
+        # Run the event loop until the task completes
+        loop.run_until_complete(flask_task)
+    except KeyboardInterrupt:
+        print("GoodBye !!!")
+    finally:
+        # Close the event loop
+        loop.close()
+
 if __name__ == '__main__':
-    print_hi('PyCharm')
+    run()
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+
+
