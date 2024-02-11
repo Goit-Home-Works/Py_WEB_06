@@ -13,11 +13,10 @@ class StudentsTable(Table):
         super().__init__(
             "students",
             {
-                "id": "serial PRIMARY KEY NOT NULL",
+                "id": "serial primary key",
                 "name": "varchar(255) NOT NULL",
-                "group_id": int
             },
-            ["FOREIGN KEY  (group_id) REFERENCES groups(id)"],
+            [{"FOREIGN KEY": "group_id", "REFERENCES": "groups(id)"}],
         )
 
     def create_table(self) -> Optional[int]:

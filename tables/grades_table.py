@@ -1,4 +1,3 @@
-
 from typing import List, Optional
 from .table import Table
 from dataclasses import dataclass
@@ -17,14 +16,14 @@ class GradesTable(Table):
         super().__init__(
             "grades",
             {
-                "id": "serial PRIMARY KEY NOT NULL",
-                "value" : "integer NOT NULL",
-                "date"  : "timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL",
-                "student_id" : int,
-                "subject_id" : int
+                "id": "serial primary key",
+                "value": "integer NOT NULL",
+                "date": "timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL",
             },
-            ["FOREIGN KEY (student_id) REFERENCES students(id)",
-             "FOREIGN KEY (subject_id) REFERENCES subjects(id)"]
+            [
+                {"FOREIGN KEY": "student_id", "REFERENCES": "students(id)"},
+                {"FOREIGN KEY": "subject_id", "REFERENCES": "subjects(id)"},
+            ],
         )
 
     def create_table(self) -> Optional[int]:
@@ -35,4 +34,3 @@ class GradesTable(Table):
         return [Grade(**i) for i in rows] if rows else None
 
     # інші методи, які можуть бути потрібні для роботи
-    

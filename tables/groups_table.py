@@ -12,10 +12,10 @@ class GroupsTable(Table):
         super().__init__(
             "groups",
             {
-                "id": "serial PRIMARY KEY NOT NULL",
+                "id": "serial primary key",
                 "name": "varchar(255) NOT NULL",
             },
-            []
+            [],
         )
 
     def create_table(self) -> Optional[int]:

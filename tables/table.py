@@ -4,6 +4,8 @@ from psycopg2 import connect, extensions, Error
 
 column_name = str
 column_type = str
+foreign_key = str
+referencies = str
 
 class Table:
     conn: extensions.connection = None
@@ -12,7 +14,7 @@ class Table:
         self,
         table_name: str,
         columns: dict[column_name, column_type],
-        constrains: list[str]
+        constrains: list[dict[foreign_key, referencies]]
     ) -> None:
         self.conn = connect(
             dbname="postgres",
@@ -26,13 +28,18 @@ class Table:
         self.columns = columns
         self.constrains = constrains
 
-        full_columns = [f"{key} {val}" for key, val in columns.items()]
-        full_columns.extend(constrains)
+    def create_table(self) -> int | None:
+        full_columns = [f"{key} {val}" for key, val in self.columns.items()]
+       
+        for constraint in self.constrains:
+            pair1, pair2 = constraint.items()
+            formatted_constraint = f"{pair1[1]} INTEGER {pair2[0]} {pair2[1]}"
+            full_columns.append(formatted_constraint)
 
-        temp = (", ").join(full_columns)
-
-        sql_request = f"CREATE TABLE IF NOT EXISTS {table_name} ({', '.join(full_columns)});"
-
+        sql_request = (
+            f"CREATE TABLE IF NOT EXISTS {self.table_name} ({', '.join(full_columns)});"
+        )
+        print(sql_request)
         logging.debug(sql_request)
 
         try:
@@ -44,29 +51,6 @@ class Table:
         finally:
             c.close()
 
-    def create_table(self) -> int | None:
-        
-        print(self)
-        
-        # table_columns = (",").join(self.columns.keys())
-        # table_questions = (",").join("?" for _ in self.columns.keys())
-
-        # sql_request = f'INSERT INTO {self.table_name}({table_columns}) VALUES({table_questions});'
-
-        # logging.debug(sql_request)
-        
-
-        # cur = self.conn.cursor()
-
-        # try:
-        #     cur.execute(sql_request)
-        #     self.conn.commit()
-        # except Error as e:
-        #     print(e)
-        # finally:
-        #     cur.close()
-
-        # return cur.lastrowid
 
     def get_all(self) -> list[typing.Iterable[typing.Any]] | None:
         rows = None
@@ -130,5 +114,3 @@ class Table:
             cur.close()
     def __str__(self):
         return f"{self.__dict__}"
-    
-    

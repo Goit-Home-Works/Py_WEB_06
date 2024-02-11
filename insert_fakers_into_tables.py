@@ -1,54 +1,90 @@
 from faker import Faker
+from faker.providers import DynamicProvider
 import random
 from psycopg2 import connect, extensions, Error
-from create_tables_postgresql import create_tables 
+
 
 def insert_fake_data(conn):
     fake = Faker()
 
-    # Create tables
-    create_tables(conn)
+    subjects_provider = DynamicProvider(
+        provider_name="study_subjects",
+        elements=[
+            "App development",
+            "Computer programming",
+            "Computer repair",
+            "Graphic design",
+            "Media technology",
+            "Video game development",
+            "Web design",
+            "Web programming",
+        ],
+    )
+    fake.add_provider(subjects_provider)
 
     # Insert fake data
     with conn.cursor() as cur:
+        
         # Groups
-        groups = [f"Group {i+1}" for i in range(3)]
-        for group in groups:
-            cur.execute("INSERT INTO groups (name) VALUES (%s)", (group,))
+        
+        # groups = [i+1 for i in range(3)]
+        # for group in groups:
+        #     cur.execute("INSERT INTO groups (id, name) VALUES (%s, %s)", (group, group))
 
-        # Teachers
-        teachers = [fake.name() for _ in range(5)]
-        cur.executemany(
-            "INSERT INTO teachers (name) VALUES (%s)",
-            [(teacher,) for teacher in teachers],
-        )
+        # # Teachers
+        
+        # teachers = [
+        #     (i, fake.name(), ) for i in range(1, 6)  # Start from 1 to match teacher_id
+        # ]
 
-        # Subjects
-        subjects = [
-            (fake.word(), random.choice(range(1, 6))) for _ in range(8)
-        ]  # Assign a random teacher to each subject
-        cur.executemany(
-            "INSERT INTO subjects (subject_name, teacher_id) VALUES (%s, %s)", subjects
-        )
+        # cur.executemany(
+        #     "INSERT INTO teachers (id, teacher_name) VALUES (%s, %s)",
+        #     teachers,
+        # )
 
-        # Students
-        students = [
-            (fake.name(), random.choice(range(1, 4))) for _ in range(30)
-        ]  # Assign a random group to each student
-        cur.executemany(
-            "INSERT INTO students (name, group_id) VALUES (%s, %s)", students
-        )
+        # # Subjects
+        
+        # subjects = [(i+1, fake.study_subjects(), random.choice(range(1, 6))) for i in range(8)]
+        # cur.executemany(
+        #     "INSERT INTO subjects (id, subject_name, teacher_id) VALUES (%s, %s, %s)", subjects
+        # )
+
+
+        # # Students
+        
+        # students = [
+        #     (i+1, fake.name(),  random.choice(range(1, 4))) for i in range(30)
+        # ]  # Assign a random group to each student
+        # cur.executemany(
+        #     "INSERT INTO students (id, name, group_id) VALUES (%s, %s, %s)", students
+        # )
 
         # Grades
-        grades = [
-            (
-                random.randint(60, 100),
-                fake.date_time_this_year(before_now=True, after_now=False),
-                random.choice(range(1, 31)),
-                random.choice(range(1, 9)),
-            )
-            for _ in range(20)
-        ]
+        
+        # Fetch student IDs from the database
+        cur.execute("SELECT id FROM students")
+        student_ids = [row[0] for row in cur.fetchall()]
+
+        # Fetch subject IDs from the database
+        cur.execute("SELECT id FROM subjects")
+        subject_ids = [row[0] for row in cur.fetchall()]
+
+        # Generate grades for each student and subject with a minimum of 4 grades
+        grades = []
+
+        for student_id in student_ids:
+            for subject_id in subject_ids:
+                # Ensure each student has a minimum of 4 grades for each subject
+                for _ in range(4):
+                    grade = (
+                        random.randint(60, 100),
+                        fake.date_time_this_year(before_now=True, after_now=False),
+                        student_id,
+                        subject_id,
+                    )
+                    grades.append(grade)
+
+        # Insert grades into the database
         cur.executemany(
             "INSERT INTO grades (value, date, student_id, subject_id) VALUES (%s, %s, %s, %s)",
             grades,
@@ -63,11 +99,11 @@ if __name__ == "__main__":
     try:
         # Connect to the PostgreSQL server
         conn = connect(
-            user="your_username",
-            password="your_password",
+            dbname="postgres",
+            user="postgres",
+            password="sergio",
             host="localhost",
-            port="5432",
-            dbname="your_database_name",
+            port=5432,
         )
 
         # Insert fake data

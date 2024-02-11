@@ -45,11 +45,11 @@ class TableManager:
 
 if __name__ == "__main__":
     tables_to_create = [
-        GradesTable,
         GroupsTable,
         StudentsTable,
-        SubjectsTable,
         TeachersTable,
+        SubjectsTable,
+        GradesTable,
     ]
 
     table_manager = TableManager(

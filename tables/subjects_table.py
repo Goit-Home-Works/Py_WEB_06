@@ -13,11 +13,12 @@ class SubjectsTable(Table):
         super().__init__(
             "subjects",
             {
-                "id": "serial PRIMARY KEY NOT NULL",
-                "subject_name" : "VARCHAR(255) NOT NULL",
-                "teacher_id"  : int,
+                "id": "serial primary key",
+                "subject_name": "varchar(255) NOT NULL",
             },
-            ["FOREIGN KEY  (teacher_id) REFERENCES teachers(id)",],
+            [
+                {"FOREIGN KEY": "teacher_id", "REFERENCES": "teachers(id)"},
+            ],
         )
 
     def create_table(self) -> Optional[int]:
