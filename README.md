@@ -50,3 +50,21 @@
 
     Середній бал, який певний викладач ставить певному студентові.
     Оцінки студентів у певній групі з певного предмета на останньому занятті.
+
+##  Виконання завдання:
+
+  # Create tables:
+   
+   python3 create_tables_postgresql.py
+
+# insert in tables:
+  
+  python3 insert_fakers_into_tables.py
+
+# execute requests from hw to console:
+
+  python3 execute_sql_query_request.py
+
+# for check the database:
+
+  python3 main.py
